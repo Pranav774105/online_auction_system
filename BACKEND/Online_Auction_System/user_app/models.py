@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -15,12 +12,12 @@ class Country(models.Model):
 class State(models.Model):
     state_id = models.BigAutoField(primary_key=True)
     state_name = models.CharField(max_length=30)
-    state_code = models.ForeignKey(Country, on_delete = models.CASCADE, related_name = 'states')
+    country = models.ForeignKey(Country, on_delete = models.CASCADE, related_name = 'states')
 
 class City(models.Model):
     city_id = models.BigAutoField(primary_key=True)
     city_name = models.CharField(max_length=30)
-    city_code = models.models.ForeignKey(State, on_delete = models.CASCADE, related_name = 'cities')
+    state = models.ForeignKey(State, on_delete = models.CASCADE, related_name = 'cities')
 
     def __str__(self) -> str:
         return f'{self.city_name}'
@@ -34,8 +31,8 @@ class User(AbstractUser):
     passport_back = models.ImageField(blank=True, upload_to='passport_back/')
     contact_no = PhoneNumberField(blank=True)
     address = models.TextField(blank=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='users')
-    pincode = models.PositiveIntegerField()
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='users', default=1)
+    pincode = models.PositiveIntegerField(null=True)
 
 class BankInformation(models.Model):
     bank_name = models.CharField(max_length=100)
